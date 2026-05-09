@@ -1,0 +1,22 @@
+# Node
+node_modules/
+
+# React
+dist/
+build/
+
+# Java
+target/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Env
+.env
+
+# Uploads
+uploads/
