@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8080/api';
+const BASE_URL =  'https://sri-sai-mosquito-clean.onrender.com/api';
 
 const apiClient = axios.create({ baseURL: BASE_URL });
 
