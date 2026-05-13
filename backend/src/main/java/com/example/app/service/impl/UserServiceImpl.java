@@ -31,11 +31,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public AuthResponse registerUser(RegisterRequest registerRequest) {
         if (userRepository.existsByUsername(registerRequest.getUsername())) {
-            return new AuthResponse(null, null, null, "Username already exists");
+            throw new IllegalArgumentException("Username already exists");
         }
 
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            return new AuthResponse(null, null, null, "Email already exists");
+            throw new IllegalArgumentException("Email already exists");
         }
 
         User user = new User();
@@ -58,10 +58,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public AuthResponse loginUser(LoginRequest loginRequest) {
         User user = userRepository.findByUsername(loginRequest.getUsername())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new ResourceNotFoundException("Invalid credentials");
+            throw new IllegalArgumentException("Incorrect password");
         }
 
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());

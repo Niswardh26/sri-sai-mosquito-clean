@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { filterProducts, getCart } from '../api/apiClient';
+import './Navbar.css';
 
 const styles = {
   nav: { background: '#1a1a2e', color: '#fff', padding: '0 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '64px', position: 'sticky', top: 0, zIndex: 1000 },
@@ -14,12 +15,23 @@ const styles = {
   adminLink: { color: '#e94560', fontWeight: 600 },
   cartBtn: { position: 'relative', background: 'transparent', border: 'none', cursor: 'pointer', color: '#ccc', fontSize: '1.3rem', display: 'flex', alignItems: 'center' },
   cartBadge: { position: 'absolute', top: '-6px', right: '-8px', background: '#e94560', color: '#fff', borderRadius: '50%', width: '18px', height: '18px', fontSize: '0.7rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 },
+  mobileMenu: { display: 'none', flexDirection: 'column', position: 'absolute', top: '64px', left: 0, right: 0, background: '#1a1a2e', padding: '1rem', gap: '1rem' },
+  hamburger: { display: 'none', flexDirection: 'column', cursor: 'pointer', gap: '4px' },
+  bar: { width: '25px', height: '3px', background: '#fff' },
+  '@media (max-width: 768px)': {
+    nav: { padding: '0 1rem', flexWrap: 'wrap', height: 'auto', minHeight: '64px' },
+    links: { display: 'none' },
+    searchBox: { order: 2, width: '100%', justifyContent: 'center', marginTop: '0.5rem' },
+    mobileMenu: { display: 'flex' },
+    hamburger: { display: 'flex' },
+  },
 };
 
 export default function Navbar() {
   const { user, isAdmin, logoutUser } = useAuth();
   const [search, setSearch] = useState('');
   const [cartCount, setCartCount] = useState(0);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,37 +45,45 @@ export default function Navbar() {
   const handleSearch = async (e) => {
     e.preventDefault();
     if (search.trim()) navigate(`/products?name=${encodeURIComponent(search.trim())}`);
+    setIsMobileMenuOpen(false);
   };
 
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+
   return (
-    <nav style={styles.nav}>
-      <Link to="/" style={styles.brand}>Sri Sai Mosquito Enterprises</Link>
-      <ul style={styles.links}>
-        <li><Link to="/" style={styles.link}>Home</Link></li>
-        <li><Link to="/products" style={styles.link}>Products</Link></li>
-        <li><Link to="/about" style={styles.link}>About Us</Link></li>
-        <li><Link to="/contact" style={styles.link}>Contact Us</Link></li>
-        {isAdmin() && <li><Link to="/admin/dashboard" style={styles.adminLink}>Admin</Link></li>}
+    <nav className="nav">
+      <Link to="/" className="brand">Sri Sai Mosquito Enterprises</Link>
+      <div className="hamburger" onClick={toggleMobileMenu}>
+        <div className="bar"></div>
+        <div className="bar"></div>
+        <div className="bar"></div>
+      </div>
+      <ul className={`links ${isMobileMenuOpen ? 'mobileMenu open' : ''}`}>
+        <li><Link to="/" className="link" onClick={() => setIsMobileMenuOpen(false)}>Home</Link></li>
+        <li><Link to="/products" className="link" onClick={() => setIsMobileMenuOpen(false)}>Products</Link></li>
+        <li><Link to="/about" className="link" onClick={() => setIsMobileMenuOpen(false)}>About Us</Link></li>
+        <li><Link to="/contact" className="link" onClick={() => setIsMobileMenuOpen(false)}>Contact Us</Link></li>
+        {isAdmin() && <li><Link to="/admin/dashboard" className="adminLink" onClick={() => setIsMobileMenuOpen(false)}>Admin</Link></li>}
         {user && (
           <li>
-            <button style={styles.cartBtn} onClick={() => navigate('/cart')} title="Cart">
+            <button className="cartBtn" onClick={() => { navigate('/cart'); setIsMobileMenuOpen(false); }} title="Cart">
               🛒
-              {cartCount > 0 && <span style={styles.cartBadge}>{cartCount}</span>}
+              {cartCount > 0 && <span className="cartBadge">{cartCount}</span>}
             </button>
           </li>
         )}
         {user ? (
-          <li><button onClick={logoutUser} style={{ ...styles.btn, background: '#555' }}>Logout</button></li>
+          <li><button onClick={() => { logoutUser(); setIsMobileMenuOpen(false); }} className="btn" style={{ background: '#555' }}>Logout</button></li>
         ) : (
           <>
-            <li><Link to="/login" style={styles.link}>Login</Link></li>
-            <li><Link to="/register" style={{ ...styles.btn, textDecoration: 'none', borderRadius: '4px', padding: '0.4rem 0.8rem' }}>Register</Link></li>
+            <li><Link to="/login" className="link" onClick={() => setIsMobileMenuOpen(false)}>Login</Link></li>
+            <li><Link to="/register" className="btn" style={{ textDecoration: 'none', borderRadius: '4px', padding: '0.4rem 0.8rem' }} onClick={() => setIsMobileMenuOpen(false)}>Register</Link></li>
           </>
         )}
       </ul>
-      <form onSubmit={handleSearch} style={styles.searchBox}>
-        <input style={styles.input} placeholder="Search products..." value={search} onChange={e => setSearch(e.target.value)} />
-        <button type="submit" style={styles.btn}>Search</button>
+      <form onSubmit={handleSearch} className="searchBox">
+        <input className="input" placeholder="Search products..." value={search} onChange={e => setSearch(e.target.value)} />
+        <button type="submit" className="btn">Search</button>
       </form>
     </nav>
   );
