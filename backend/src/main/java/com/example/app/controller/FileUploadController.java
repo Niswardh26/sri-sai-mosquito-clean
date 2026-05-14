@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -39,6 +40,7 @@ public class FileUploadController {
     @PostMapping("/media")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, String>> uploadMedia(
+            HttpServletRequest request,
             @RequestParam("file") MultipartFile file) throws IOException {
 
         String contentType = file.getContentType();
@@ -68,7 +70,12 @@ public class FileUploadController {
 
         Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
 
-        String fileUrl = "/api/uploads/" + filename;
+        String baseUrl = request.getScheme() + "://" + request.getServerName();
+        int port = request.getServerPort();
+        if (port != 80 && port != 443) {
+            baseUrl += ":" + port;
+        }
+        String fileUrl = baseUrl + "/api/uploads/" + filename;
         String fileType = ALLOWED_IMAGE_TYPES.contains(contentType) ? "image" : "video";
 
         Map<String, String> response = new HashMap<>();

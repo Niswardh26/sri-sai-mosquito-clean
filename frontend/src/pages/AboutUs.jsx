@@ -53,7 +53,7 @@ export default function AboutUs() {
           </div>
           <div style={styles.contactItem}>
             <div style={styles.contactLabel}>Phone</div>
-            <div style={styles.contactVal}>+91 98765 43210</div>
+            <div style={styles.contactVal}>+91 99891 86378</div>
           </div>
           <div style={styles.contactItem}>
             <div style={styles.contactLabel}>Working Hours</div>
