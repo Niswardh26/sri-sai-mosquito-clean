@@ -44,7 +44,7 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
 
 jwt:
-  secret: niswardhkomati
+  secret: U1JpU2FpMTIzIT8kJV4mKigpXytbXX5AZDhHcUxoZkcwV1o=
   expiration: 86400000
 
 app:
