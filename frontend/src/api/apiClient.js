@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL =  'https://sri-sai-mosquito-clean.onrender.com/api';
-
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080/api';
 const apiClient = axios.create({ baseURL: BASE_URL });
 
 apiClient.interceptors.request.use((config) => {
