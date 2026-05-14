@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS carts (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT NOT NULL UNIQUE,
+  updated_at DATETIME,
+  CONSTRAINT fk_carts_user FOREIGN KEY (user_id) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS orders (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  order_number VARCHAR(255) NOT NULL UNIQUE,
+  user_id BIGINT NOT NULL,
+  customer_name VARCHAR(255) NOT NULL,
+  phone VARCHAR(255),
+  address VARCHAR(1000),
+  order_date DATETIME NOT NULL,
+  total_amount DOUBLE NOT NULL,
+  status VARCHAR(50) NOT NULL,
+  notes VARCHAR(2000),
+  created_at DATETIME,
+  updated_at DATETIME,
+  CONSTRAINT fk_orders_user FOREIGN KEY (user_id) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS inquiries (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  customer_name VARCHAR(255),
+  phone VARCHAR(255),
+  address VARCHAR(255),
+  message VARCHAR(2000),
+  product_interest VARCHAR(255),
+  created_at DATETIME
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
